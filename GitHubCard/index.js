@@ -27,7 +27,7 @@ axios.get(`https://api.github.com/users/JLeegwater`)
     console.log(err)
   })
   .finally(() => {
-    console.log('done')
+    //console.log('done')
   })
 
 
@@ -46,19 +46,44 @@ axios.get(`https://api.github.com/users/JLeegwater`)
 
 const followersArray = [];
 
-axios.get(`https://api.github.com/users/tetondan/followers`)
+
+axios.get(`https://api.github.com/users/tetondan/followers`)        //get follower objects from profile
   .then(res => {
     res.data.forEach(obj => {
-      followersArray.push(obj.login)
+      followersArray.push(obj.login)                                //get only names of the friends and add them to the followersArray
     })
+    return followersArray;                                          //return the array so we can use it in the next .then statement
   })
+
+  .then(names => {
+    followersArray.forEach(name => {                                //forEach name in the array
+      axios.get(`https://api.github.com/users/${name}`)             //get the git profile of the friend
+        .then(res => {
+          cards.appendChild(createCard(res.data));
+        })
+        .catch(err => {
+          console.log(err)
+        })
+        .finally(() => {
+          console.log('done')
+        })
+    })
+  }
+
+  )
   .catch(err => {
     console.log(err)
   })
   .finally(() => {
-    console.log('done')
-  })
-console.log(followersArray)
+    //console.log('done')
+  });
+console.log(followersArray.length)
+
+
+
+
+
+
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
